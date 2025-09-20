@@ -1,0 +1,42 @@
+model BankAccount {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String @db.ObjectId
+  
+  // Dados bancários essenciais para PIX
+  banco       String    // Código do banco (3 dígitos)
+  agencia     String    // Agência (4 dígitos)
+  conta       String    // Número da conta
+  digito      String?   // Dígito verificador
+  tipo        AccountType
+  tipoPessoa  PersonType
+  
+  // Dados do titular
+  titular     String    // Nome do titular
+  cpfCnpj     String    // CPF ou CNPJ do titular
+  
+  // Status e validações
+  ativa       Boolean   @default(true)
+  validada    Boolean   @default(false)
+  
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relations
+  user            User              @relation(fields: [userId], references: [id])
+  pixTransactions PixTransaction[]
+  
+  @@unique([banco, agencia, conta, cpfCnpj])
+  @@index([userId])
+}
+
+enum AccountType {
+  CC  // Conta Corrente
+  CP  // Conta Poupança
+  PP  // Conta de Pagamento Pré-paga
+}
+
+enum PersonType {
+  F   // Pessoa Física
+  J   // Pessoa Jurídica
+}
