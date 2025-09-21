@@ -1,5 +1,5 @@
 import { itauConfig } from "./config"
-import type { RequestConfig } from "./types"
+import type { PixTransferRequest, PixTransferResponse, RequestConfig } from "./types"
 
 export class ItauClient {
   private token?: string
@@ -100,5 +100,9 @@ export class ItauClient {
 
   async delete<T>(endpoint: string): Promise<T> {
     return this.makeRequest<T>(endpoint, { method: "DELETE" })
+  }
+
+  async transferPix(data: PixTransferRequest): Promise<PixTransferResponse> {
+    return this.post("/sispag/v1/transferencias", data)
   }
 }
